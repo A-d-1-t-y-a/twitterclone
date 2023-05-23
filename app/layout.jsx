@@ -1,4 +1,6 @@
 import NavBar from "@/components/NavBar";
+import Provider from "@/components/Provider";
+import BottomSignInBar from "components/BottomSignInBar"
 import "styles/global.css";
 
 export const metadata = {
@@ -6,14 +8,18 @@ export const metadata = {
 };
 
 function RootLayout({ children }) {
+
   return (
     <html lang="en">
-      <body className="w-full h-full">
-        <main className="flex lg:px-20 md:px-10">
-          <NavBar />
-          {children}
-        </main>
+        <Provider>
+      <body className="w-full h-full relative">
+          <main className="flex lg:px-20 md:px-10">
+            <NavBar />
+            {children}
+          </main>
+          <BottomSignInBar/>
       </body>
+        </Provider>
     </html>
   );
 }

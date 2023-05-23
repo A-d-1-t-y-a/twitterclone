@@ -10,7 +10,10 @@ module.exports = {
       colors: {
         primary: "#1DA1F2",
         navBarFontColor: "#333",
-        gray3:"#828282"
+        gray3:"#828282",
+        textBlack:"#0F1419",
+        gray5:"#5B7083",
+        spacer:"#F7F9FA"
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
