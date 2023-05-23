@@ -76,7 +76,8 @@ function Card({ cardData }) {
   return (
     <div className="flex items-start gap-4 px-8 py-4 border w-full" key={_id}>
       {userDetails?.image && (
-        <Image alt="failed"
+        <Image
+          alt="failed"
           src={userDetails.image}
           width={40}
           height={40}
@@ -91,7 +92,8 @@ function Card({ cardData }) {
               {userDetails.username}
             </p>
             {isBlueTick && (
-              <Image alt="failed"
+              <Image
+                alt="failed"
                 src="/assets/icons/blue-checkmark.svg"
                 width={24}
                 height={24}
@@ -102,15 +104,21 @@ function Card({ cardData }) {
               {moment(createdAt).fromNow()}
             </p>
           </div>
-          <Image alt="failed" src="/assets/icons/down-arrow.svg" width={16} height={16} />
+          <Image
+            alt="failed"
+            src="/assets/icons/down-arrow.svg"
+            width={16}
+            height={16}
+          />
         </div>
         <p className="text-navBarFontColor text-base mb-3">{description}</p>
         {imageUrl && (
-          <Image alt="failed"
+          <Image
+            alt="failed"
             src={imageUrl}
             width={1200}
             height={800}
-            className="aspect-video object-cover"
+            className="aspect-video object-cover rounded-2xl"
           />
         )}
         {renderPostActions()}
