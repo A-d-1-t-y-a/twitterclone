@@ -1,9 +1,11 @@
-import React from 'react'
+import OuterLayout from "@/components/OuterLayout";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <OuterLayout title="Profile" backNavigationOption={true}>
+      <div className="relative"></div>
+    </OuterLayout>
+  );
 }
 
-export default page
+export default page;

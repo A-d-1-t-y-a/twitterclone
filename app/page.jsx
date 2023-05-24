@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Card from "@/components/Card";
 import convertToBase64 from "@/utils/convertor";
 import OuterLayout from "@/components/OuterLayout";
+import SelectAndUnSelect from "@/components/SelectAndUnSelect";
 
 function Home() {
   const [tweet, setTweet] = useState("");
@@ -85,25 +86,29 @@ function Home() {
     },
   ];
 
+  const handleUnSelectImage = () => setSelectedImage(null);
+
   const handleTweet = (e) => setTweet(e.target.value);
 
   const handleTweetPost = async (e) => {
     e.preventDefault();
-    try {
-      await fetch("api/tweet", {
-        method: "POST",
-        body: JSON.stringify({
-          userDetails: session?.user.id,
-          description: tweet,
-          imageUrl: selectedImage,
-        }),
-      });
-      setTweet("");
-      setSelectedImage(null);
+    if (selectedImage || tweet) {
+      try {
+        await fetch("api/tweet", {
+          method: "POST",
+          body: JSON.stringify({
+            userDetails: session?.user.id,
+            description: tweet,
+            imageUrl: selectedImage,
+          }),
+        });
+        setTweet("");
+        setSelectedImage(null);
 
-      handleFetchTweets();
-    } catch (e) {
-      console.log(e);
+        handleFetchTweets();
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
@@ -113,8 +118,8 @@ function Home() {
         "api/tweet",
         {
           method: "GET",
-        },
-        { cache: "force-cache" }
+        }
+        // { cache: "force-cache" }
       );
       const data = await res.json();
 
@@ -127,6 +132,17 @@ function Home() {
   useEffect(() => {
     handleFetchTweets();
   }, []);
+
+  const renderSelectedImage = () =>
+    selectedImage && (
+      <SelectAndUnSelect
+        width={574}
+        height={285}
+        selectedImage={selectedImage}
+        handleUnSelectImage={handleUnSelectImage}
+      />
+    );
+    
   return (
     <OuterLayout title="Home">
       {session?.user && (
@@ -147,15 +163,7 @@ function Home() {
                   onChange={handleTweet}
                   className="placeholder:text-gray5 text-black font-medium border-none outline-none p-2 w-full"
                 />
-                {selectedImage && (
-                  <Image
-                    alt="failed"
-                    src={selectedImage}
-                    width={1200}
-                    height={800}
-                    className="rounded-2xl aspect-video my-2"
-                  />
-                )}
+                {renderSelectedImage()}
                 <div className="flex items-center">
                   <div className="flex-1 flex items-center gap-4">
                     {tweetOption.map(({ Tag }) => Tag)}

@@ -131,8 +131,8 @@ function NavBar() {
                 key={title}
                 href={path}
                 className={cx(
-                  "flex items-center gap-4 py-1 px-2",
-                  title ? "my-2" : "mb-7"
+                  "flex items-center gap-4 px-4",
+                  title ? "py-3 hover:bg-slate-100 rounded-full" : "pb-7"
                 )}
               >
                 <Image
