@@ -12,7 +12,7 @@ function RootLayout({ children }) {
   return (
     <html lang="en">
         <Provider>
-      <body className="w-full h-full relative">
+      <body className="w-full h-full relative overflow-hidden">
           <main className="flex lg:px-20 md:px-10">
             <NavBar />
             {children}

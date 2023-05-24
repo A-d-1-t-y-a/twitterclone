@@ -1,9 +1,14 @@
-import React from 'react'
+import Head from "next/head";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <Head>
+        <title>{"home / twitter"}</title>
+      </Head>
+      page
+    </div>
+  );
 }
 
-export default page
+export default page;

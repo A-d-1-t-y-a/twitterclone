@@ -7,7 +7,7 @@ function BottomSignInBar() {
 
   return (
     session?.user ? <>
-    </> : <div className="absolute left-0 right-0 bottom-0 flex items-center justify-around bg-primary py-8 px-16">
+    </> : <div className="absolute left-0 right-0 bottom-0 flex items-center justify-around bg-primary py-2 px-16">
       <div className="hidden sm:block">
         <p className="font-extrabold text-white text-2xl ">
           Don’t miss what’s happening</p><p className="font-medium text-white text-sm">
