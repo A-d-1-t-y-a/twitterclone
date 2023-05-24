@@ -1,10 +1,10 @@
 "use client";
-
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Card from "@/components/Card";
 import convertToBase64 from "@/utils/convertor";
+import OuterLayout from "@/components/OuterLayout";
 
 function Home() {
   const [tweet, setTweet] = useState("");
@@ -99,6 +99,7 @@ function Home() {
         }),
       });
       setTweet("");
+      setSelectedImage(null);
 
       handleFetchTweets();
     } catch (e) {
@@ -108,9 +109,13 @@ function Home() {
 
   const handleFetchTweets = async () => {
     try {
-      const res = await fetch("api/tweet", {
-        method: "GET",
-      });
+      const res = await fetch(
+        "api/tweet",
+        {
+          method: "GET",
+        },
+        { cache: "force-cache" }
+      );
       const data = await res.json();
 
       setTweets([...data]);
@@ -122,12 +127,8 @@ function Home() {
   useEffect(() => {
     handleFetchTweets();
   }, []);
-
   return (
-    <div
-      className="h-[100vh] overflow-y-auto lg:w-7/12 pt-14"
-      id="homePageScrolling"
-    >
+    <OuterLayout title="Home">
       {session?.user && (
         <>
           <div className="py-3 px-4 border">
@@ -176,7 +177,7 @@ function Home() {
       {tweets.map((data) => (
         <Card cardData={data} key={data._id} />
       ))}
-    </div>
+    </OuterLayout>
   );
 }
 

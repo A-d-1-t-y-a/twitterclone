@@ -65,7 +65,12 @@ function Card({ cardData }) {
             onClick={handler}
             key={icon}
           >
-            <Image alt="failed" src={bool ? activeIcon : icon} width={18} height={18} />
+            <Image
+              alt="failed"
+              src={bool ? activeIcon : icon}
+              width={18}
+              height={18}
+            />
             <p className={className}>{count}</p>
           </button>
         )
@@ -116,8 +121,8 @@ function Card({ cardData }) {
           <Image
             alt="failed"
             src={imageUrl}
-            width={1200}
-            height={800}
+            width={574}
+            height={285}
             className="aspect-video object-cover rounded-2xl"
           />
         )}

@@ -82,6 +82,45 @@ function NavBar() {
     },
   ];
 
+  const renderProfile = () => (
+    <div className="my-5 relative w-full flex justify-center">
+      <div className="mx-auto flex items-center gap-3" onClick={handleKebab}>
+        <Image
+          alt="failed"
+          src={session?.user?.image}
+          width={40}
+          height={40}
+          className="object-cover rounded-full"
+        />
+        <div className="flex-1 hidden md:block">
+          <p className="font-bold text-base text-textBlack">
+            {session?.user.name}
+          </p>
+          <p className="text-medium text-gray5 text-sm">
+            @{session?.user.name}
+          </p>
+        </div>
+        <Image
+          alt="failed"
+          src="/assets/icons/horizontal-kebab.svg"
+          width={26}
+          height={26}
+          className="hidden md:block"
+        />
+      </div>
+      {kebab && (
+        <div className="absolute bottom-full right-0 left-0 flex flex-col justify-center mx-auto z-10 my-3 shadow-md border px-2 py-3 w-full">
+          <button
+            className="bg-primary text-white font-medium text-base py-2 px-8 rounded-full"
+            onClick={signOut}
+          >
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <nav className="border px-6 pt-8 h-[100vh] flex flex-col lg:w-72">
       <div className="flex-1">
@@ -122,47 +161,7 @@ function NavBar() {
         )}
       </div>
 
-      {session?.user && (
-        <div className="my-5 relative w-full flex justify-center">
-          <div
-            className="mx-auto flex items-center gap-3"
-            onClick={handleKebab}
-          >
-            <Image
-              alt="failed"
-              src={session?.user?.image}
-              width={40}
-              height={40}
-              className="object-cover rounded-full"
-            />
-            <div className="flex-1 hidden md:block">
-              <p className="font-bold text-base text-textBlack">
-                {session?.user.name}
-              </p>
-              <p className="text-medium text-gray5 text-sm">
-                @{session?.user.name}
-              </p>
-            </div>
-            <Image
-              alt="failed"
-              src="/assets/icons/horizontal-kebab.svg"
-              width={26}
-              height={26}
-              className="hidden md:block"
-            />
-          </div>
-          {kebab && (
-            <div className="absolute bottom-full right-0 left-0 flex flex-col justify-center mx-auto z-10 my-3 shadow-md border px-2 py-3 w-full">
-              <button
-                className="bg-primary text-white font-medium text-base py-2 px-8 rounded-full"
-                onClick={signOut}
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+      {session?.user && renderProfile()}
     </nav>
   );
 }

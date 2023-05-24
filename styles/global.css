@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 
-#homePageScrolling::-webkit-scrollbar {
+#rightScrollBarId::-webkit-scrollbar, #centerScrollBarId::-webkit-scrollbar {
 	width: 0px;
 }

@@ -1,6 +1,7 @@
 import NavBar from "@/components/NavBar";
 import Provider from "@/components/Provider";
-import BottomSignInBar from "components/BottomSignInBar"
+import SideBar from "@/components/SideBar";
+import BottomSignInBar from "components/BottomSignInBar";
 import "styles/global.css";
 
 export const metadata = {
@@ -8,18 +9,18 @@ export const metadata = {
 };
 
 function RootLayout({ children }) {
-
   return (
     <html lang="en">
-        <Provider>
-      <body className="w-full h-full relative overflow-hidden">
-          <main className="flex lg:px-20 md:px-10">
+      <Provider>
+        <body className="w-full h-full relative overflow-hidden">
+          <main className="flex lg:px-24 md:px-11">
             <NavBar />
             {children}
+            <SideBar />
           </main>
-          <BottomSignInBar/>
-      </body>
-        </Provider>
+          <BottomSignInBar />
+        </body>
+      </Provider>
     </html>
   );
 }
