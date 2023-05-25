@@ -8,6 +8,7 @@ import cx from "classnames";
 
 function NavBar() {
   const pathName = usePathname();
+
   const { data: session } = useSession();
 
   const enable = session?.user;
@@ -70,14 +71,14 @@ function NavBar() {
       fillIcon: "/assets/icons/profile-fill.svg",
       icon: "/assets/icons/profile.svg",
       title: "profile",
-      path: "/profile",
+      path: `/${session?.user?.id}/${session?.user?.name}`,
       enable: enable,
     },
     {
       fillIcon: "/assets/icons/more-fill.svg",
       icon: "/assets/icons/more.svg",
       title: "more",
-      path: "/more",
+      path: "",
       enable: true,
     },
   ];
@@ -121,46 +122,46 @@ function NavBar() {
     </div>
   );
 
-  return (
-    <nav className="border px-6 pt-8 h-[100vh] flex flex-col lg:w-72">
-      <div className="flex-1">
-        {navBarItemsArray.map(
-          ({ fillIcon, icon, title, path, enable }) =>
-            enable && (
-              <Link
-                key={title}
-                href={path}
-                className={cx(
-                  "flex items-center gap-4 px-4",
-                  title ? "py-3 hover:bg-slate-100 rounded-full" : "pb-7"
-                )}
-              >
-                <Image
-                  alt="failed"
-                  src={path == pathName ? fillIcon : icon}
-                  width={26}
-                  height={26}
-                />
-                <p
-                  className={cx(
-                    "font-extrabold text-xl capitalize hidden sm:block",
-                    path == pathName ? "text-primary" : "text-navBarFontColor"
-                  )}
-                >
-                  {title}
-                </p>
-              </Link>
-            )
+  const renderNavItem = ({ fillIcon, icon, title, path, enable }) =>
+    enable && (
+      <Link
+        key={title}
+        href={path}
+        className={cx(
+          "flex items-center gap-4 px-4",
+          title ? "py-3 hover:bg-slate-100 rounded-full" : "pb-7"
         )}
+      >
+        <Image
+          alt="failed"
+          src={path == pathName.replace(/%20/g, " ") ? fillIcon : icon}
+          width={26}
+          height={26}
+        />
+        <p
+          className={cx(
+            "font-extrabold text-xl capitalize hidden md:block",
+            path == pathName.replace(/%20/g, " ")
+              ? "text-primary"
+              : "text-navBarFontColor"
+          )}
+        >
+          {title}
+        </p>
+      </Link>
+    );
 
+  return (
+    <nav className="border px-6 pt-8 h-[100vh] flex flex-col lg:w-72 overflow-auto" id="navBarScrollBarId">
+      <div className="flex-1">
+        {navBarItemsArray.map((navOption) => renderNavItem(navOption))}
         {session?.user && (
           <button className="bg-primary rounded-full md:py-4 md:px-16 font-extrabold text-white text-base mx-auto my-3 px-5 py-3">
-            <p className="hidden sm:block">Tweet</p>
-            <p className="block sm:hidden">t</p>
+            <p className="hidden md:block">Tweet</p>
+            <p className="block md:hidden">t</p>
           </button>
         )}
       </div>
-
       {session?.user && renderProfile()}
     </nav>
   );

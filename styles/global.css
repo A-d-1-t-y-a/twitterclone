@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
-#rightScrollBarId::-webkit-scrollbar, #centerScrollBarId::-webkit-scrollbar {
-	width: 0px;
+#navBarScrollBarId::-webkit-scrollbar,
+#rightScrollBarId::-webkit-scrollbar,
+#centerScrollBarId::-webkit-scrollbar {
+  width: 0px;
 }

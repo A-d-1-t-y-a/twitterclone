@@ -1,9 +1,11 @@
-import React from 'react'
+import OuterLayout from "@/components/OuterLayout";
 
-function page() {
+function Notifications() {
   return (
-    <div>page</div>
-  )
+    <OuterLayout title="Notifications" backNavigationOption={true}>
+      <div>Notifications</div>
+    </OuterLayout>
+  );
 }
 
-export default page
+export default Notifications;

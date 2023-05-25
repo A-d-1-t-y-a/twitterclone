@@ -2,10 +2,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Card from "@/components/Card";
 import convertToBase64 from "@/utils/convertor";
 import OuterLayout from "@/components/OuterLayout";
 import SelectAndUnSelect from "@/components/SelectAndUnSelect";
+import TweetCards from "@/components/TweetCards";
 
 function Home() {
   const [tweet, setTweet] = useState("");
@@ -182,9 +182,7 @@ function Home() {
           <div className="w-full h-3 bg-spacer" />
         </>
       )}
-      {tweets.map((data) => (
-        <Card cardData={data} key={data._id} />
-      ))}
+        <TweetCards tweets={tweets} />
     </OuterLayout>
   );
 }

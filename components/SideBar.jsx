@@ -1,11 +1,17 @@
 "use client";
+
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+
+import cx from "classnames";
+
 import SearchBar from "./SearchBar";
 import Trends from "./Trends";
 
 function SideBar() {
   const { data: session } = useSession();
+  const pathName = usePathname();
 
   const renderFollowersCard = (item) => (
     <div className="flex items-center gap-2 p-4" key={item}>
@@ -35,7 +41,12 @@ function SideBar() {
   );
 
   const renderFollowers = () => (
-    <div className="mt-6 bg-trendsBG rounded-t-xl">
+    <div
+      className={cx(
+        "bg-trendsBG rounded-t-xl",
+        pathName == "/explore" ? "mt-3" : "mt-6"
+      )}
+    >
       <p className="font-black text-black text-xl py-3.5 px-5 rounded-t-xl">
         Who to follow
       </p>
@@ -48,14 +59,20 @@ function SideBar() {
     </div>
   );
 
+  const renderExploreCheck = (component) =>
+    pathName !== "/explore" && component;
+
   return session?.user ? (
     <div className="relative w-3/12 hidden lg:block ml-6 py-6">
-      <SearchBar />
+      {renderExploreCheck(<SearchBar />)}
       <div
-        className="h-[100vh] w-full overflow-auto pb-28"
+        className={cx(
+          "h-[100vh] w-full overflow-auto",
+          pathName == "/explore" ? "pb-0" : "mt-4 pb-28"
+        )}
         id="rightScrollBarId"
       >
-        <Trends />
+        {renderExploreCheck(<Trends isButton={true} />)}
         {renderFollowers()}
       </div>
     </div>

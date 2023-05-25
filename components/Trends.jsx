@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-function Trends() {
+function Trends({isButton}) {
   const renderTrendCard = (item, index) => (
     <div key={item} className="bg-trendsBG p-4">
       <div className="flex items-center">
@@ -9,7 +9,7 @@ function Trends() {
         </p>
         <Image
           alt="failed"
-          src="/assets/icons/down-arrow.svg"
+          src="/assets/icons/horizontal-kebab.svg"
           width={16}
           height={16}
         />
@@ -32,9 +32,9 @@ function Trends() {
       </div>
       <div className="divide-y-2">
         {[1, 2, 3, 4].map((item, index) => renderTrendCard(item, index))}
-        <button className="text-primary text-sm font-medium rounded-b-xl text-center w-full py-3 bg-trendsBG">
+        {isButton&&<button className="text-primary text-sm font-medium rounded-b-xl text-center w-full py-3 bg-trendsBG">
           Show more
-        </button>
+        </button>}
       </div>
     </>
   );
