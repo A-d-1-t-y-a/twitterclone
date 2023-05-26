@@ -34,7 +34,7 @@ const OuterLayout = ({
     <div className="lg:w-1/2 w-9/12 relative">
       <div
         className={twMerge(
-          "absolute z-0 bg-white blur-sm opacity-75 h-16 left-0 right-0",
+          "absolute z-10 bg-white blur-sm opacity-75 h-16 left-0 right-0",
           underLayClassName
         )}
       />

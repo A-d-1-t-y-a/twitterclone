@@ -34,8 +34,6 @@ function NavBar() {
       });
 
       handleDialogBox();
-
-      fetchTweets();
     } catch (e) {
       console.log(e);
     }

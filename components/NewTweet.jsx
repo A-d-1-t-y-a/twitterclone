@@ -32,70 +32,6 @@ function NewTweet({ handleTweetPost }) {
     }
   };
 
-  const tweetOption = [
-    {
-      Tag: (
-        <label onChange={handleImageSelect}>
-          <Image
-            alt="failed"
-            src="/assets/icons/image.svg"
-            width={24}
-            height={24}
-          />
-          <input type="file" className="hidden" accept="image/*" />
-        </label>
-      ),
-    },
-    {
-      Tag: (
-        <button>
-          <Image
-            alt="failed"
-            src="/assets/icons/gif.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-      ),
-    },
-    {
-      Tag: (
-        <button>
-          <Image
-            alt="failed"
-            src="/assets/icons/poll.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-      ),
-    },
-    {
-      Tag: (
-        <button>
-          <Image
-            alt="failed"
-            src="/assets/icons/smile-emoji.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-      ),
-    },
-    {
-      Tag: (
-        <button>
-          <Image
-            alt="failed"
-            src="/assets/icons/schedule.svg"
-            width={24}
-            height={24}
-          />
-        </button>
-      ),
-    },
-  ];
-
   const renderSelectedImage = () =>
     selectedImage && (
       <div className="relative">
@@ -118,7 +54,41 @@ function NewTweet({ handleTweetPost }) {
   const renderTweetInputActions = () => (
     <div className="flex items-center">
       <div className="flex-1 flex items-center gap-4">
-        {tweetOption.map(({ Tag }) => Tag)}
+        <label onChange={handleImageSelect}>
+          <Image
+            alt="failed"
+            src="/assets/icons/image.svg"
+            width={24}
+            height={24}
+          />
+          <input type="file" className="hidden" accept="image/*" />
+        </label>
+
+        <Image
+          alt="failed"
+          src="/assets/icons/gif.svg"
+          width={24}
+          height={24}
+        />
+        <Image
+          alt="failed"
+          src="/assets/icons/poll.svg"
+          width={24}
+          height={24}
+        />
+        <Image
+          alt="failed"
+          src="/assets/icons/smile-emoji.svg"
+          width={24}
+          height={24}
+        />
+
+        <Image
+          alt="failed"
+          src="/assets/icons/schedule.svg"
+          width={24}
+          height={24}
+        />
       </div>
       <button
         className="bg-primary py-2 px-4 rounded-full font-bold text-base text-white disabled:opacity-50"
