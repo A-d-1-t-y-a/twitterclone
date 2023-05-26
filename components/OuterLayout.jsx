@@ -31,13 +31,14 @@ const OuterLayout = ({
     );
 
   return (
-    <div className="lg:w-1/2 w-9/12 relative">
+    <div className="relative max-w-[620px] w-[570px]">
       <div
         className={twMerge(
           "absolute z-10 bg-white blur-sm opacity-75 h-16 left-0 right-0",
           underLayClassName
         )}
       />
+
       {headerUI ? (
         <div className="absolute z-20 left-0 right-0">{headerUI()}</div>
       ) : (
@@ -52,7 +53,8 @@ const OuterLayout = ({
           />
         </div>
       )}
-      <div className="h-[100vh] overflow-y-auto pt-16" id="centerScrollBarId">
+
+      <div className="h-[100vh] overflow-y-auto pt-16 w-full" id="centerScrollBarId">
         {children}
       </div>
     </div>

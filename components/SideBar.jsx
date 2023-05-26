@@ -63,7 +63,7 @@ function SideBar() {
     pathName !== "/explore" && component;
 
   return session?.user ? (
-    <div className="relative w-3/12 hidden lg:block ml-6 py-6">
+    <div className="relative w-80 hidden min-[1100px]:block ml-6 py-6">
       {renderExploreCheck(<SearchBar />)}
       <div
         className={cx(
