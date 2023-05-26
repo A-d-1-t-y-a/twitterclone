@@ -28,6 +28,7 @@ const UserSchema = new Schema({
     type: Number,
     default: 0,
   },
+  bio: String,
 });
 
 const User = models.User || model("User", UserSchema);

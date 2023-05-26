@@ -1,28 +1,35 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
+
+import moment from "moment";
+
+import convertToBase64 from "@/utils/convertor";
+
+import Tabs from "@/components/Tabs";
+import DialogBox from "@/components/DialogBox";
 import TweetCards from "@/components/TweetCards";
 import OuterLayout from "@/components/OuterLayout";
-import Tabs from "@/components/Tabs";
-import moment from "moment";
-import Image from "next/image";
-import { useEffect, useState } from "react";
 
 const tabs = ["Tweets", "Likes", "Media", "Replies"];
 
-function page({ params: { id } }) {
+function Profile({ params: { id } }) {
   const [userId, title] = id;
 
+  const [tweets, setTweets] = useState([]);
+  const [dialogBox, setDialogBox] = useState(!false);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [profileData, setProfileData] = useState({
     email: "",
     username: "",
     image: "",
+    bio: "",
     createdAt: "",
     coverImage: "",
     following: 0,
     follower: 0,
   });
-  const [tweets, setTweets] = useState([]);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
 
   const fetchUserDetails = async () => {
     try {
@@ -44,6 +51,8 @@ function page({ params: { id } }) {
           updatedData: profileData,
         }),
       });
+
+      handleDialogBox();
     } catch (e) {
       console.log(e);
     }
@@ -61,6 +70,38 @@ function page({ params: { id } }) {
   };
 
   const handleTabSelection = (tab) => setActiveTab(tab);
+
+  const handleDialogBox = () => setDialogBox((prev) => !prev);
+
+  const handleCoverImageSelect = async (e) => {
+    const [File] = e.target.files;
+    if (File) {
+      const imageUrl = await convertToBase64(File);
+
+      setProfileData((prev) => ({ ...prev, coverImage: imageUrl }));
+    }
+  };
+
+  const handleImageSelect = async (e) => {
+    const [File] = e.target.files;
+    if (File) {
+      const imageUrl = await convertToBase64(File);
+
+      setProfileData((prev) => ({ ...prev, image: imageUrl }));
+    }
+  };
+
+  const handleUnSelectCoverImage = () =>
+    setProfileData((prev) => ({ ...prev, coverImage: "" }));
+
+  const handleUnSelectImage = () =>
+    setProfileData((prev) => ({ ...prev, image: "" }));
+
+  const handleBioInput = (e) =>
+    setProfileData((prev) => ({ ...prev, bio: e.target.value }));
+
+  const handleUserNameInput = (e) =>
+    setProfileData((prev) => ({ ...prev, username: e.target.value }));
 
   useEffect(() => {
     if (userId) {
@@ -94,7 +135,7 @@ function page({ params: { id } }) {
         )}
         <button
           className="shadow shadow-primary border text-primary px-4 py-1 float-right m-4 rounded-full font-bold"
-          onClick={fetchUpDateProfile}
+          onClick={handleDialogBox}
         >
           Edit profile
         </button>
@@ -131,16 +172,122 @@ function page({ params: { id } }) {
     </>
   );
 
+  const renderImage = (
+    image,
+    handleUnselectImage,
+    handleSelectImage,
+    width,
+    height,
+    className,
+    imageStyle
+  ) => (
+    <div className={className}>
+      {image ? (
+        <div className="relative w-full h-full">
+          <Image
+            alt="failed"
+            src={image}
+            width={width}
+            height={height}
+            className={imageStyle}
+          />
+          <button
+            className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black text-center text-white"
+            onClick={handleUnselectImage}
+          >
+            X
+          </button>
+        </div>
+      ) : (
+        <label onChange={handleSelectImage}>
+          <div className="w-full h-full">
+            <Image
+              src="/assets/icons/camera.svg"
+              alt="icon"
+              width={24}
+              height={24}
+            />
+          </div>
+          <input
+            type="file"
+            className="hidden w-full h-full"
+            accept="image/*"
+          />
+        </label>
+      )}
+    </div>
+  );
+
+  const renderEditProfileDetails = () => (
+    <>
+      <div className="w-full h-full relative">
+        {renderImage(
+          profileData.coverImage,
+          handleUnSelectCoverImage,
+          handleCoverImageSelect,
+          1200,
+          13,
+          "w-full h-56 flex items-center justify-center bg-slate-200 relative",
+          "aspect-[3/1]"
+        )}
+        {renderImage(
+          profileData.image,
+          handleUnSelectImage,
+          handleImageSelect,
+          144,
+          144,
+          "w-36 h-36 flex items-center justify-center rounded-full absolute bg-slate-300 z-10 mx-5 top-2/3",
+          "aspect-square rounded-full border-2"
+        )}
+      </div>
+      <div className="mt-16 w-full">
+        <input
+          placeholder="Name"
+          value={profileData.username}
+          onChange={handleUserNameInput}
+          className="rounded-lg bg-slate-200 p-3 m-4 w-11/12 outline-none"
+        />
+        <textarea
+          placeholder="Bio"
+          value={profileData.bio}
+          onChange={handleBioInput}
+          className="rounded-lg bg-slate-200 p-3 m-4 w-11/12 outline-none"
+        />
+      </div>
+    </>
+  );
+
+  const renderDialogBoxHeaderUI = () => (
+    <>
+      <p className="flex-1 text-black font-black text-xl">Edit Profile</p>
+      <button
+        className="text-primary border-2 border-primary font-medium py-2 px-6 mr-4 hover:bg-primary bg-white hover:text-white rounded-full delay-100 duration-700 ease-out"
+        onClick={fetchUpDateProfile}
+      >
+        Save
+      </button>
+    </>
+  );
+
   return (
-    <OuterLayout
-      title={title?.replace(/%20/g, " ")}
-      backNavigationOption={true}
-    >
-      {renderProfileDetails()}
-      <Tabs tabs={tabs} activeTab={activeTab} handler={handleTabSelection} />
-      <TweetCards tweets={tweets} />
-    </OuterLayout>
+    <>
+      <OuterLayout
+        title={title?.replace(/%20/g, " ")}
+        backNavigationOption={true}
+      >
+        {renderProfileDetails()}
+        <Tabs tabs={tabs} activeTab={activeTab} handler={handleTabSelection} />
+        <TweetCards tweets={tweets} />
+      </OuterLayout>
+      <DialogBox
+        open={dialogBox}
+        onClose={handleDialogBox}
+        headerUI={renderDialogBoxHeaderUI}
+      >
+        {renderEditProfileDetails()}
+      </DialogBox>
+    </>
   );
 }
 
-export default page;
+export default Profile;
