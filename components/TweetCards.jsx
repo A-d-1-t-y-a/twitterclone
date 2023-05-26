@@ -1,53 +1,86 @@
 "use client";
 
-import moment from "moment";
-import { memo } from "react";
+import { memo, useState } from "react";
 import Image from "next/image";
 
+import moment from "moment";
+import cx from "classnames";
+
 function TweetCards({ tweets }) {
+  const [likes, setLikes] = useState([]);
+  const [retweets, setRetweets] = useState([]);
+  const [share, setShare] = useState("");
+
+  const handleShare = (text, id) => async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setShare(id);
+      setTimeout(() => {
+        setShare("");
+      }, 2000);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleRetweetOrLikes = (id, data, setData) => () => {
+    if (data.includes(id)) setData((prev) => prev.filter((e) => e != id));
+    else setData((prev) => [...prev, id]);
+  };
+
+  const handleCheckingPresence = (id, backData, data, setData) => {
+    if (backData) {
+      setData((prev) => [...prev, id]);
+      return true;
+    } else return data.includes(id);
+  };
+
   const renderPostActions = ({
     likesCount,
-    shareCount,
     retweetCount,
-    replyCount,
-    share,
     retweet,
     like,
-    reply,
     _id,
+    description,
   }) => {
+    const retweetBoolean = handleCheckingPresence(
+      _id,
+      retweet,
+      retweets,
+      setRetweets
+    );
+    const likesBoolean = handleCheckingPresence(_id, like, likes, setLikes);
+
     const postActionsArray = [
       {
         icon: "/assets/icons/chat.svg",
-        activeIcon: "/assets/icons/chat-blue.svg",
-        count: retweetCount,
-        bool: retweet,
         handler: () => console.log("clicked"),
-        className: "text-green-500",
+        buttonClassName:
+          "hover:bg-sky-400 rounded-full hover:py-1 hover:px-3",
       },
       {
         icon: "/assets/icons/retweet.svg",
         activeIcon: "/assets/icons/retweet-green.svg",
-        count: replyCount,
-        bool: reply,
-        handler: () => console.log("clicked"),
-        className: "text-green-500",
+        count: retweetBoolean ? retweetCount + 1 : retweetCount,
+        bool: retweetBoolean,
+        handler: handleRetweetOrLikes(_id, retweets, setRetweets),
+        className: "text-green-400",
+        buttonClassName:
+          "hover:bg-green-200 rounded-full hover:py-1 hover:px-3",
       },
       {
         icon: "/assets/icons/love.svg",
         activeIcon: "/assets/icons/red-love.svg",
-        count: likesCount,
-        bool: like,
-        handler: () => console.log("clicked"),
+        count: likesBoolean ? likesCount + 1 : likesCount,
+        bool: likesBoolean,
+        handler: handleRetweetOrLikes(_id, likes, setLikes),
         className: "text-red-700",
+        buttonClassName: "hover:bg-red-100 rounded-full hover:py-1 hover:px-3",
       },
       {
         icon: "/assets/icons/share.svg",
-        activeIcon: "/assets/icons/share-blue.svg",
-        count: shareCount,
-        bool: share,
-        className: "text-primary",
-        handler: () => console.log("clicked"),
+        buttonClassName: "hover:bg-primary rounded-full hover:py-1 hover:px-3",
+        handler: handleShare(description, _id),
       },
     ];
 
@@ -57,9 +90,20 @@ function TweetCards({ tweets }) {
         key={_id + _id}
       >
         {postActionsArray.map(
-          ({ icon, activeIcon, count, bool, handler, className }) => (
+          ({
+            icon,
+            activeIcon,
+            count,
+            bool,
+            handler,
+            className,
+            buttonClassName,
+          }) => (
             <button
-              className="flex items-center gap-1"
+              className={cx(
+                "flex items-center gap-1 transition-all delay-200 ease-in-out duration-300 bg",
+                buttonClassName
+              )}
               onClick={handler}
               key={icon}
             >
@@ -69,7 +113,7 @@ function TweetCards({ tweets }) {
                 width={18}
                 height={18}
               />
-              <p className={className}>{count}</p>
+              {count && <p className={className}>{count}</p>}
             </button>
           )
         )}
@@ -81,54 +125,57 @@ function TweetCards({ tweets }) {
     const { imageUrl, userDetails, isBlueTick, createdAt, description, _id } =
       tweet;
     return (
-      <div className="flex items-start gap-4 px-8 py-4 border w-full" key={_id}>
-        {userDetails?.image && (
-          <Image
-            alt="failed"
-            src={userDetails.image}
-            width={40}
-            height={40}
-            className="rounded-full aspect-square object-cover"
-          />
-        )}
-        <div className="flex-1">
-          <div className="flex items-center mb-1">
-            <div className="flex items-center gap-1 flex-1">
-              <p className="font-extrabold text-base text-black">
-                {userDetails.username}
-              </p>
-              {isBlueTick && (
-                <Image
-                  alt="failed"
-                  src="/assets/icons/blue-checkmark.svg"
-                  width={24}
-                  height={24}
-                />
-              )}
-              <p className="text-base text-gray3">@{userDetails.username} • </p>
-              <p className="text-base text-gray3">
-                {moment(createdAt).fromNow()}
-              </p>
-            </div>
+      <div key={_id}>
+        <div className="flex items-start gap-4 px-6 py-4 border w-full">
+          {userDetails?.image && (
             <Image
               alt="failed"
-              src="/assets/icons/down-arrow.svg"
-              width={16}
-              height={16}
-            />
-          </div>
-          <p className="text-navBarFontColor text-base mb-3">{description}</p>
-          {imageUrl && (
-            <Image
-              alt="failed"
-              src={imageUrl}
-              width={574}
-              height={285}
-              className="aspect-video object-cover rounded-2xl"
+              src={userDetails.image}
+              width={40}
+              height={40}
+              className="rounded-full aspect-square object-cover"
             />
           )}
-          {renderPostActions(tweet)}
+          <div className="flex-1">
+            <div className="flex items-center mb-1">
+              <div className="flex items-center gap-1 flex-1">
+                <p className="font-bold text-sm text-black line-clamp-1">
+                  {userDetails.username}
+                </p>
+                {isBlueTick && (
+                  <Image
+                    alt="failed"
+                    src="/assets/icons/blue-checkmark.svg"
+                    width={16}
+                    height={16}
+                  />
+                )}
+                <p className="text-xs text-gray3 line-clamp-1">
+                  @{userDetails.username} •{" "}
+                </p>
+                <p className="text-xs text-gray3 whitespace-nowrap">
+                  {moment(createdAt).fromNow(true)}
+                </p>
+              </div>
+            </div>
+            <p className="text-navBarFontColor text-base mb-3">{description}</p>
+            {imageUrl && (
+              <Image
+                alt="failed"
+                src={imageUrl}
+                width={574}
+                height={285}
+                className="aspect-video object-cover rounded-2xl"
+              />
+            )}
+            {renderPostActions(tweet)}
+          </div>
         </div>
+        {share == _id && (
+          <p className="p-1 bg-green-400 w-full text-white rounded-lg text-center font-medium">
+            tweet copied !!
+          </p>
+        )}
       </div>
     );
   };

@@ -63,12 +63,12 @@ function SideBar() {
     pathName !== "/explore" && component;
 
   return session?.user ? (
-    <div className="relative w-80 hidden min-[1100px]:block ml-6 py-6">
+    <div className="relative w-80 hidden min-[1100px]:block ml-6 pt-6">
       {renderExploreCheck(<SearchBar />)}
       <div
         className={cx(
-          "h-[100vh] w-full overflow-auto",
-          pathName == "/explore" ? "pb-0" : "mt-4 pb-28"
+          "h-[calc(100vh-100px)] w-full overflow-auto",
+          pathName == "/explore" ? "pb-0" : "mt-4"
         )}
         id="rightScrollBarId"
       >

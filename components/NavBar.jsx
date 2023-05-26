@@ -1,12 +1,17 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+
 import { useState } from "react";
+
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import Image from "next/image";
+
 import cx from "classnames";
+
 import DialogBox from "./DialogBox";
 import NewTweet from "./NewTweet";
+import Profile from "./Profile";
 
 function NavBar() {
   const pathName = usePathname();
@@ -15,10 +20,7 @@ function NavBar() {
 
   const enable = session?.user;
 
-  const [kebab, setKebab] = useState();
   const [dialogBox, setDialogBox] = useState(false);
-
-  const handleKebab = () => setKebab((prev) => !prev);
 
   const handleDialogBox = () => setDialogBox((prev) => !prev);
 
@@ -39,7 +41,6 @@ function NavBar() {
     }
   };
 
-
   const navBarItemsArray = [
     {
       fillIcon: "/assets/icons/logo-fill-blue.svg",
@@ -47,6 +48,7 @@ function NavBar() {
       title: "",
       path: "/",
       enable: true,
+      mobile: false,
     },
     {
       fillIcon: "/assets/icons/home-fill.svg",
@@ -54,6 +56,7 @@ function NavBar() {
       title: "Home",
       path: "/",
       enable: enable,
+      mobile: true,
     },
     {
       fillIcon: "/assets/icons/hash-blue.svg",
@@ -61,6 +64,7 @@ function NavBar() {
       title: "explore",
       path: "/explore",
       enable: true,
+      mobile: true,
     },
     {
       fillIcon: "/assets/icons/bell-fill.svg",
@@ -68,6 +72,7 @@ function NavBar() {
       title: "notifications",
       path: "/notifications",
       enable: enable,
+      mobile: true,
     },
     {
       fillIcon: "/assets/icons/message-fill.svg",
@@ -75,6 +80,7 @@ function NavBar() {
       title: "messages",
       path: "/messages",
       enable: enable,
+      mobile: false,
     },
     {
       fillIcon: "/assets/icons/bookmark-fill.svg",
@@ -82,6 +88,7 @@ function NavBar() {
       title: "Bookmarks",
       path: "/bookmarks",
       enable: enable,
+      mobile: true,
     },
     {
       fillIcon: "/assets/icons/list-fill.svg",
@@ -89,6 +96,7 @@ function NavBar() {
       title: "List",
       path: "/list",
       enable: enable,
+      mobile: false,
     },
     {
       fillIcon: "/assets/icons/profile-fill.svg",
@@ -96,6 +104,7 @@ function NavBar() {
       title: "profile",
       path: `/${session?.user?.id}/${session?.user?.name}`,
       enable: enable,
+      mobile: true,
     },
     {
       fillIcon: "/assets/icons/more-fill.svg",
@@ -103,48 +112,9 @@ function NavBar() {
       title: "more",
       path: "",
       enable: true,
+      mobile: false,
     },
   ];
-
-  const renderProfile = () =>
-    session?.user && (
-      <div className="my-5 relative w-full flex justify-center">
-        <div className="mx-auto flex items-center gap-3" onClick={handleKebab}>
-          <Image
-            alt="failed"
-            src={session?.user?.image}
-            width={40}
-            height={40}
-            className="object-cover rounded-full"
-          />
-          <div className="flex-1 hidden md:block">
-            <p className="font-bold text-base text-textBlack">
-              {session?.user.name}
-            </p>
-            <p className="text-medium text-gray5 text-sm">
-              @{session?.user.name}
-            </p>
-          </div>
-          <Image
-            alt="failed"
-            src="/assets/icons/horizontal-kebab.svg"
-            width={26}
-            height={26}
-            className="hidden md:block"
-          />
-        </div>
-        {kebab && (
-          <div className="absolute bottom-full right-0 left-0 flex flex-col justify-center mx-auto z-10 my-3 shadow-md border px-2 py-3 w-full">
-            <button
-              className="bg-primary text-white font-medium text-base py-2 px-8 rounded-full"
-              onClick={signOut}
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </div>
-    );
 
   const renderNavItem = ({ fillIcon, icon, title, path, enable }) =>
     enable && (
@@ -181,9 +151,44 @@ function NavBar() {
     </DialogBox>
   );
 
-  return (
+  const renderNavItemFromMobileView = ({
+    fillIcon,
+    icon,
+    title,
+    path,
+    mobile,
+  }) =>
+    mobile && (
+      <Link
+        key={title}
+        href={path}
+        className={cx(
+          "flex items-center gap-4 px-4",
+          title ? "py-3 hover:bg-slate-100 rounded-full" : "pb-3"
+        )}
+      >
+        <Image
+          alt="failed"
+          src={path == pathName.replace(/%20/g, " ") ? fillIcon : icon}
+          width={26}
+          height={26}
+        />
+      </Link>
+    );
+
+  const renderMobileView = () => (
+    <div className="absolute bottom-0 left-0 right-0 block min-[540px]:hidden bg-white z-30">
+      <div className="flex items-center justify-around w-full bg-white">
+        {navBarItemsArray.map((navOption) =>
+          renderNavItemFromMobileView(navOption)
+        )}
+      </div>
+    </div>
+  );
+
+  const renderDesktopView = () => (
     <nav
-      className="border px-6 pt-4 h-[100vh] flex flex-col lg:w-72 overflow-auto"
+      className="border pt-4 h-[100vh] flex flex-col min-[530px]:items-center md:items-start min-[530px]:w-24 md:px-6 md:w-72 overflow-auto"
       id="navBarScrollBarId"
     >
       <div className="flex-1">
@@ -198,9 +203,16 @@ function NavBar() {
           </button>
         )}
       </div>
-      {renderProfile()}
+      <Profile />
       {renderDialogBoxUI()}
     </nav>
+  );
+
+  return (
+    <>
+      <div className="hidden min-[540px]:block">{renderDesktopView()}</div>
+      {renderMobileView()}
+    </>
   );
 }
 

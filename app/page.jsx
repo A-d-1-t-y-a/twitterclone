@@ -50,8 +50,12 @@ function Home() {
 
   return (
     <OuterLayout title="Home">
-      {session?.user && <NewTweet handleTweetPost={fetchTweetPost} />}
-      <hr className=" h-3 bg-spacer" />
+      {session?.user && (
+        <>
+          <NewTweet handleTweetPost={fetchTweetPost} />
+          <hr className=" h-3 bg-spacer" />
+        </>
+      )}
       <TweetCards tweets={tweets} />
     </OuterLayout>
   );

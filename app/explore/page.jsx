@@ -39,7 +39,7 @@ function page() {
 
   const renderHeaderUI = () => (
     <div className="w-full">
-      <div className="w-full flex items-center py-1 px-3 -mb-4">
+      <div className="w-full flex items-center py-2 px-3 -mb-4">
         <SearchBar />
         <Image
           src="/assets/icons/setting.svg"
@@ -54,10 +54,9 @@ function page() {
   );
 
   return (
-    <OuterLayout headerUI={renderHeaderUI} underLayClassName="h-28 opacity-90">
-      <div className="mt-12 pt-1">
-        <Trends />
-      </div>
+    <OuterLayout headerUI={renderHeaderUI} underLayClassName="opacity-90">
+      <div className="h-16"/>
+      <Trends />
       <TweetCards tweets={tweets} />
     </OuterLayout>
   );

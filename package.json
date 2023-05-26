@@ -24,6 +24,7 @@
     "tw-merge": "^0.0.1-alpha.3"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.0.1"
+    "@svgr/webpack": "^8.0.1",
+    "@tailwindcss/line-clamp": "^0.4.4"
   }
 }
