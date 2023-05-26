@@ -18,7 +18,7 @@ function Profile({ params: { id } }) {
   const [userId, title] = id;
 
   const [tweets, setTweets] = useState([]);
-  const [dialogBox, setDialogBox] = useState(!false);
+  const [dialogBox, setDialogBox] = useState(false);
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [profileData, setProfileData] = useState({
     email: "",
