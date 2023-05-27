@@ -29,6 +29,21 @@ function Home() {
     }
   };
 
+  const fetchDeleteTweet = (id) => async () => {
+    try {
+      await fetch("api/tweet", {
+        method: "PATCH",
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
+
+      setTweets((prev) => prev.filter(({ _id }) => _id != id));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleFetchTweets = async () => {
     try {
       const res = await fetch(
@@ -56,7 +71,7 @@ function Home() {
           <hr className=" h-3 bg-spacer" />
         </>
       )}
-      <TweetCards tweets={tweets} />
+      <TweetCards tweets={tweets} handleDelete={fetchDeleteTweet} />
     </OuterLayout>
   );
 }

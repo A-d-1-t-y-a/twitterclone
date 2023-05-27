@@ -16,37 +16,13 @@ const TweetSchema = new Schema({
     type: Boolean,
     default: true,
   },
-  likesCount: {
-    type: Number,
-    default: 0,
+  likedBy: {
+    type: [String],
+    default: [],
   },
-  shareCount: {
-    type: Number,
-    default: 0,
-  },
-  retweetCount: {
-    type: Number,
-    default: 0,
-  },
-  replyCount: {
-    type: Number,
-    default: 0,
-  },
-  share: {
-    type: Boolean,
-    default: false,
-  },
-  retweet: {
-    type: Boolean,
-    default: false,
-  },
-  like: {
-    type: Boolean,
-    default: false,
-  },
-  reply: {
-    type: Boolean,
-    default: false,
+  retweetedBy: {
+    type: [String],
+    default: [],
   },
 });
 

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import Image from "next/image";
+import { memo, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -52,4 +52,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default memo(Profile);

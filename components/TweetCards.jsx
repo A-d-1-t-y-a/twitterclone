@@ -1,20 +1,41 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 import moment from "moment";
 import cx from "classnames";
 
-function TweetCards({ tweets }) {
-  const [likes, setLikes] = useState([]);
-  const [retweets, setRetweets] = useState([]);
+function TweetCards({ tweets, handleDelete }) {
+  const { data: session } = useSession();
+
   const [share, setShare] = useState("");
+  const [likes, setLikes] = useState({});
+  const [retweets, setRetweets] = useState({});
+
+  const fetchUpdateData = async (id, newArray, isLikes) => {
+    try {
+      await fetch("api/tweet", {
+        method: "PATCH",
+        body: JSON.stringify({
+          id: id,
+          updatedData: isLikes
+            ? { likedBy: newArray[id] }
+            : { retweetedBy: newArray[id] },
+        }),
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleShare = (text, id) => async () => {
     try {
       await navigator.clipboard.writeText(text);
+
       setShare(id);
+
       setTimeout(() => {
         setShare("");
       }, 2000);
@@ -23,70 +44,57 @@ function TweetCards({ tweets }) {
     }
   };
 
-  const handleRetweetOrLikes = (id, data, setData) => () => {
-    if (data.includes(id)) setData((prev) => prev.filter((e) => e != id));
-    else setData((prev) => [...prev, id]);
+  const handleRetweetOrLikes = (id, data, setData, isLikes) => () => {
+    let tempData = { ...data };
+
+    if (data[id].includes(session.user.id))
+      tempData[id] = tempData[id].filter((e) => e != session.user.id);
+    else tempData[id] = [...tempData[id], session.user.id];
+
+    fetchUpdateData(id, tempData, isLikes);
+    setData({ ...tempData });
   };
 
-  const handleCheckingPresence = (id, backData, data, setData) => {
-    if (backData) {
-      setData((prev) => [...prev, id]);
-      return true;
-    } else return data.includes(id);
-  };
-
-  const renderPostActions = ({
-    likesCount,
-    retweetCount,
-    retweet,
-    like,
-    _id,
-    description,
-  }) => {
-    const retweetBoolean = handleCheckingPresence(
-      _id,
-      retweet,
-      retweets,
-      setRetweets
-    );
-    const likesBoolean = handleCheckingPresence(_id, like, likes, setLikes);
-
+  const renderPostActions = ({ _id, description, userDetails }) => {
     const postActionsArray = [
       {
         icon: "/assets/icons/chat.svg",
         handler: () => console.log("clicked"),
-        buttonClassName:
-          "hover:bg-sky-400 rounded-full hover:py-1 hover:px-3",
+        buttonClassName: "hover:bg-sky-400",
       },
-      {
-        icon: "/assets/icons/retweet.svg",
-        activeIcon: "/assets/icons/retweet-green.svg",
-        count: retweetBoolean ? retweetCount + 1 : retweetCount,
-        bool: retweetBoolean,
-        handler: handleRetweetOrLikes(_id, retweets, setRetweets),
-        className: "text-green-400",
-        buttonClassName:
-          "hover:bg-green-200 rounded-full hover:py-1 hover:px-3",
-      },
+      userDetails._id == session.user.id
+        ? {
+            icon: "/assets/icons/cross-icon.svg",
+            buttonClassName: "hover:bg-red-100",
+            handler: handleDelete(_id),
+          }
+        : {
+            icon: "/assets/icons/retweet.svg",
+            activeIcon: "/assets/icons/retweet-green.svg",
+            count: retweets[_id]?.length,
+            bool: retweets[_id]?.includes(session.user.id),
+            handler: handleRetweetOrLikes(_id, retweets, setRetweets, false),
+            className: "text-green-400",
+            buttonClassName: "hover:bg-green-200",
+          },
       {
         icon: "/assets/icons/love.svg",
         activeIcon: "/assets/icons/red-love.svg",
-        count: likesBoolean ? likesCount + 1 : likesCount,
-        bool: likesBoolean,
-        handler: handleRetweetOrLikes(_id, likes, setLikes),
+        count: likes[_id]?.length,
+        bool: likes[_id]?.includes(session.user.id),
+        handler: handleRetweetOrLikes(_id, likes, setLikes, true),
         className: "text-red-700",
-        buttonClassName: "hover:bg-red-100 rounded-full hover:py-1 hover:px-3",
+        buttonClassName: "hover:bg-red-100",
       },
       {
         icon: "/assets/icons/share.svg",
-        buttonClassName: "hover:bg-primary rounded-full hover:py-1 hover:px-3",
+        buttonClassName: "hover:bg-primary",
         handler: handleShare(description, _id),
       },
     ];
-
     return (
       <div
-        className="my-3 flex items-center justify-between mx-4 gap-2"
+        className="mt-3 flex items-center justify-between mx-4 gap-2"
         key={_id + _id}
       >
         {postActionsArray.map(
@@ -101,7 +109,7 @@ function TweetCards({ tweets }) {
           }) => (
             <button
               className={cx(
-                "flex items-center gap-1 transition-all delay-200 ease-in-out duration-300 bg",
+                "flex items-center gap-1 transition-all delay-200 ease-in-out duration-300 py-1 px-3 rounded-full",
                 buttonClassName
               )}
               onClick={handler}
@@ -113,7 +121,9 @@ function TweetCards({ tweets }) {
                 width={18}
                 height={18}
               />
-              {count && <p className={className}>{count}</p>}
+              {count && (
+                <p className={cx(bool ? className : "text-black")}>{count}</p>
+              )}
             </button>
           )
         )}
@@ -125,8 +135,13 @@ function TweetCards({ tweets }) {
     const { imageUrl, userDetails, isBlueTick, createdAt, description, _id } =
       tweet;
     return (
-      <div key={_id}>
-        <div className="flex items-start gap-4 px-6 py-4 border w-full">
+      <div className="px-6 py-4 border" key={_id}>
+        {session?.user.id && retweets[_id]?.includes(session.user.id) && (
+          <p className="text-green-400 font-medium ml-2 text-sm mb-2 -mt-2">
+            You Retweeted
+          </p>
+        )}
+        <div className="flex items-start gap-4 w-full">
           {userDetails?.image && (
             <Image
               alt="failed"
@@ -168,7 +183,7 @@ function TweetCards({ tweets }) {
                 className="aspect-video object-cover rounded-2xl"
               />
             )}
-            {renderPostActions(tweet)}
+            {session?.user.id && renderPostActions(tweet)}
           </div>
         </div>
         {share == _id && (
@@ -179,6 +194,21 @@ function TweetCards({ tweets }) {
       </div>
     );
   };
+
+  useEffect(() => {
+    let tempLikesObject = {},
+      tempRetweetsObj = {};
+
+    for (let { likedBy, retweetedBy, _id } of tweets) {
+      tempLikesObject[_id] = likedBy;
+
+      tempRetweetsObj[_id] = retweetedBy;
+    }
+
+    setLikes({ ...tempLikesObject });
+
+    setRetweets({ ...tempRetweetsObj });
+  }, [tweets]);
 
   return tweets.map((tweet) => renderTweet(tweet));
 }
