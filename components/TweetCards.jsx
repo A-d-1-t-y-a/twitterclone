@@ -92,6 +92,7 @@ function TweetCards({ tweets, handleDelete }) {
         handler: handleShare(description, _id),
       },
     ];
+
     return (
       <div
         className="mt-3 flex items-center justify-between mx-4 gap-2"
@@ -134,6 +135,7 @@ function TweetCards({ tweets, handleDelete }) {
   const renderTweet = (tweet) => {
     const { imageUrl, userDetails, isBlueTick, createdAt, description, _id } =
       tweet;
+
     return (
       <div className="px-6 py-4 border" key={_id}>
         {session?.user.id && retweets[_id]?.includes(session.user.id) && (

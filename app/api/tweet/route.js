@@ -39,24 +39,6 @@ export const PATCH = async (request) => {
 
     return new Response("Updated Successfully", { status: 200 });
   } catch (e) {
-    return new Response(e, {
-      status: 500,
-    });
-  }
-};
-
-export const DELETE = async (request) => {
-  const { id } = await request.json();
-
-  try {
-    connectMongoDB();
-
-    await Tweet.findByIdAndDelete(id);
-
-    return new Response("Updated Successfully", { status: 200 });
-  } catch (e) {
-    return new Response(e, {
-      status: 500,
-    });
+    return new Response(e, { status: 500 });
   }
 };

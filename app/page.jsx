@@ -29,16 +29,11 @@ function Home() {
     }
   };
 
-  const fetchDeleteTweet = (id) => async () => {
+  const fetchDeleteTweet = (tweetId) => async () => {
     try {
-      await fetch("api/tweet", {
-        method: "PATCH",
-        body: JSON.stringify({
-          id: id,
-        }),
-      });
+      await fetch(`api/tweet/${tweetId}`, { method: "DELETE" });
 
-      setTweets((prev) => prev.filter(({ _id }) => _id != id));
+      setTweets((prev) => prev.filter(({ _id }) => _id != tweetId));
     } catch (e) {
       console.log(e);
     }

@@ -14,3 +14,13 @@ export const GET = async (req, { params: { id } }) => {
     return new Response("Failed to get the Tweets", { status: 500 });
   }
 };
+
+export const DELETE = async (request, { params: { id } }) => {
+  try {
+    connectMongoDB();
+    await Tweet.findByIdAndDelete(id);
+    return new Response("Deleted Successfully", { status: 200 });
+  } catch (e) {
+    return new Response(e, { status: 500 });
+  }
+};
