@@ -156,7 +156,7 @@ function TweetCards({ tweets, handleDelete }) {
           <div className="flex-1">
             <div className="flex items-center mb-1">
               <div className="flex items-center gap-1 flex-1">
-                <p className="font-bold text-sm text-black line-clamp-1">
+                <p className="font-bold text-sm text-black line-clamp-1 break-all break-words">
                   {userDetails.username}
                 </p>
                 {isBlueTick && (
@@ -167,7 +167,7 @@ function TweetCards({ tweets, handleDelete }) {
                     height={16}
                   />
                 )}
-                <p className="text-xs text-gray3 line-clamp-1">
+                <p className="text-xs text-gray3 line-clamp-1 break-all break-words">
                   @{userDetails.username} •{" "}
                 </p>
                 <p className="text-xs text-gray3 whitespace-nowrap">
