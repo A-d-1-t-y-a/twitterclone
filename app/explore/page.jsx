@@ -33,6 +33,16 @@ function page() {
     }
   };
 
+  const fetchDeleteTweet = (tweetId) => async () => {
+    try {
+      await fetch(`api/tweet/${tweetId}`, { method: "DELETE" });
+
+      setTweets((prev) => prev.filter(({ _id }) => _id != tweetId));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     handleFetchTweets();
   }, []);
@@ -55,9 +65,9 @@ function page() {
 
   return (
     <OuterLayout headerUI={renderHeaderUI} underLayClassName="opacity-90">
-      <div className="h-16"/>
+      <div className="h-16" />
       <Trends />
-      <TweetCards tweets={tweets} />
+      <TweetCards tweets={tweets} handleDelete={fetchDeleteTweet} />
     </OuterLayout>
   );
 }

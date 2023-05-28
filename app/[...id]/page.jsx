@@ -69,6 +69,16 @@ function Profile({ params: { id } }) {
     }
   };
 
+  const fetchDeleteTweet = (tweetId) => async () => {
+    try {
+      await fetch(`api/tweet/${tweetId}`, { method: "DELETE" });
+
+      setTweets((prev) => prev.filter(({ _id }) => _id != tweetId));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleTabSelection = (tab) => setActiveTab(tab);
 
   const handleDialogBox = () => setDialogBox((prev) => !prev);
@@ -142,11 +152,14 @@ function Profile({ params: { id } }) {
       </div>
 
       <div className="mt-20 pl-10 text-gray3">
-        <p className="font-bold text-2xl text-black capitalize">
+        <p className="font-bold text-2xl text-black capitalize break-all break-words">
           {profileData.username}
         </p>
 
-        <p>@{profileData.username}</p>
+        <p className=" break-all break-words">@{profileData.username}</p>
+        {profileData.bio && (
+          <p className=" break-all break-words my-1">Bio: {profileData.bio}</p>
+        )}
 
         <div className="mt-3 mb-2 flex items-center gap-1">
           <Image
@@ -281,7 +294,7 @@ function Profile({ params: { id } }) {
       >
         {renderProfileDetails()}
         <Tabs tabs={tabs} activeTab={activeTab} handler={handleTabSelection} />
-        <TweetCards tweets={tweets} />
+        <TweetCards tweets={tweets} handleDelete={fetchDeleteTweet} />
       </OuterLayout>
       <DialogBox
         open={dialogBox}

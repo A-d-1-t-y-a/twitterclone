@@ -11,6 +11,9 @@ const TweetSchema = new Schema({
   description: {
     type: String,
   },
+  tags: {
+    type: [String],
+  },
   createdAt: { type: Date, default: Date.now },
   isBlueTick: {
     type: Boolean,

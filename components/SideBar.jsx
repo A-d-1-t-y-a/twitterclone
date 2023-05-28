@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -28,7 +28,7 @@ function SideBar() {
       console.log(e);
     }
   };
-  // console.log(session?.user.id);
+
   const fetchUpdateFollowers = async (id, data) => {
     try {
       await fetch(`/api/user/${id}`, {
@@ -57,30 +57,55 @@ function SideBar() {
   };
 
   const handlerFilterAndAdder = (data, checkedId) => {
-    if (data.includes(checkedId)) data = data.filter((id) => id != checkedId);
-    else data = [...data, checkedId];
+    let isThrown = false;
 
-    return data;
+    if (data.includes(checkedId)) data = data.filter((id) => id != checkedId);
+    else {
+      data = [...data, checkedId];
+      isThrown = true;
+    }
+
+    return { data, isThrown };
   };
 
-  const handleFollowUnFollow = (userId, index) => () => {
+  const handleFollowUnFollow = (userId, username, index) => () => {
     let tempData = [...usersData],
       currentUserTempData = { ...profileData };
 
-    tempData[index].followers = handlerFilterAndAdder(
+    const { data: temp, isThrown: tempThrown } = handlerFilterAndAdder(
       tempData[index].followers,
       session.user.id
     );
 
-    currentUserTempData.following = handlerFilterAndAdder(
+    tempData[index].followers = temp;
+    tempData[index].notification = [
+      ...tempData[index].notification,
+      tempThrown
+        ? username + " is Following you"
+        : username + " is unFollowing you",
+    ];
+
+    const { data: current, isThrown: currentThrown } = handlerFilterAndAdder(
       currentUserTempData.following,
       userId
     );
 
-    fetchUpdateFollowers(userId, { followers: tempData[index].followers });
+    currentUserTempData.following = current;
+    currentUserTempData.notification = [
+      ...currentUserTempData.notification,
+      currentThrown
+        ? "You are Following " + username
+        : "You are unFollowed " + username,
+    ];
+
+    fetchUpdateFollowers(userId, {
+      followers: tempData[index].followers,
+      notification: tempData[index].notification,
+    });
 
     fetchUpdateFollowers(session.user.id, {
       following: currentUserTempData.following,
+      notification: currentUserTempData.notification,
     });
 
     setUsersData(tempData);
@@ -127,7 +152,7 @@ function SideBar() {
                 ? " bg-primary text-white"
                 : "bg-white text-primary"
             )}
-            onClick={handleFollowUnFollow(_id, idx)}
+            onClick={handleFollowUnFollow(_id, username, idx)}
           >
             {followers.includes(session.user.id) ? "Following" : "Follow"}
           </button>
