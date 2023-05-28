@@ -1,11 +1,11 @@
+"use client";
 import OuterLayout from "@/components/OuterLayout";
+import WhoToFollow from "@/components/WhoToFollow";
 
 function List() {
   return (
     <OuterLayout title="List" backNavigationOption={true}>
-      <div className="text-black font-black text-center text-2xl my-6 w-full">
-        This List is not Done
-      </div>
+      <WhoToFollow className="mt-1" />
     </OuterLayout>
   );
 }

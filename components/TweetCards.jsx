@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import moment from "moment";
 import cx from "classnames";
+import Link from "next/link";
 
 function TweetCards({ tweets, handleDelete }) {
   const { data: session } = useSession();
@@ -145,13 +146,15 @@ function TweetCards({ tweets, handleDelete }) {
         )}
         <div className="flex items-start gap-4 w-full">
           {userDetails?.image && (
-            <Image
-              alt="failed"
-              src={userDetails.image}
-              width={40}
-              height={40}
-              className="rounded-full aspect-square object-cover"
-            />
+            <Link href={`/${userDetails._id}/${userDetails.username}`}>
+              <Image
+                alt="failed"
+                src={userDetails.image}
+                width={40}
+                height={40}
+                className="rounded-full aspect-square object-cover"
+              />
+            </Link>
           )}
           <div className="flex-1">
             <div className="flex items-center mb-1">

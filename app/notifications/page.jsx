@@ -30,7 +30,7 @@ function Notifications() {
   return (
     <OuterLayout title="Notifications" backNavigationOption={true}>
       {session?.user &&
-        (!notifications.length ? (
+        (notifications.length ? (
           <div className="flex flex-col gap-1 mt-3">
             {notifications.map((note) => (
               <div
