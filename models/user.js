@@ -20,13 +20,17 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  follower: {
-    type: Number,
-    default: 0,
+  followers: {
+    type: [String],
+    default: [],
   },
   following: {
-    type: Number,
-    default: 0,
+    type: [String],
+    default: [],
+  },
+  notification: {
+    type: [String],
+    default: [],
   },
   bio: String,
 });

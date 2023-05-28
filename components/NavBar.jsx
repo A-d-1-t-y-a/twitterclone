@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -216,4 +216,4 @@ function NavBar() {
   );
 }
 
-export default NavBar;
+export default memo(NavBar);

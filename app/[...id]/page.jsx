@@ -27,8 +27,8 @@ function Profile({ params: { id } }) {
     bio: "",
     createdAt: "",
     coverImage: "",
-    following: 0,
-    follower: 0,
+    followers: [],
+    following: [],
   });
 
   const fetchUserDetails = async () => {
@@ -160,11 +160,15 @@ function Profile({ params: { id } }) {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <p className="font-bold text-black">{profileData.following}</p>
+            <p className="font-bold text-black">
+              {profileData.following.length}
+            </p>
             <p> Following</p>
           </div>
           <div className="flex items-center gap-1">
-            <p className="font-bold text-black">{profileData.follower}</p>
+            <p className="font-bold text-black">
+              {profileData.followers.length}
+            </p>
             <p>Followers</p>
           </div>
         </div>

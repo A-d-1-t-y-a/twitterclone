@@ -32,9 +32,9 @@ function Trends({isButton}) {
       </div>
       <div className="divide-y-2">
         {[1, 2, 3, 4].map((item, index) => renderTrendCard(item, index))}
-        {isButton&&<button className="text-primary text-sm font-medium rounded-b-xl text-center w-full py-3 bg-trendsBG">
+        {/* {isButton&&<button className="text-primary text-sm font-medium rounded-b-xl text-center w-full py-3 bg-trendsBG">
           Show more
-        </button>}
+        </button>} */}
       </div>
     </>
   );
